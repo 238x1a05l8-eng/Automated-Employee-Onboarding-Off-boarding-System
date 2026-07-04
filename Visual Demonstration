@@ -1,0 +1,148 @@
+🖥️ Visual Demonstration
+Automated Employee Onboarding & Offboarding System
+
+Below is a visual-style walkthrough of how the system looks and behaves in real time. This is structured like a UI + workflow simulation demo you can directly convert into Figma, slides, or a live frontend.
+
+1. 🏠 System Dashboard (Main Screen)
+-----------------------------------------------------
+|  EMPLOYEE LIFECYCLE DASHBOARD                     |
+-----------------------------------------------------
+|  Active Employees      |  128                     |
+|  Onboarding In-Progress|  12                      |
+|  Pending Offboarding   |  5                       |
+-----------------------------------------------------
+|  Quick Actions:                                    |
+|  [+ Add Employee]  [Trigger Onboarding]           |
+|  [Exit Employee]   [View Audit Logs]              |
+-----------------------------------------------------
+|  Recent Activity                                  |
+|  - John added → Onboarding started                |
+|  - Alice exited → Access revoked                  |
+-----------------------------------------------------
+2. 👤 Add Employee Screen (HR View)
+-----------------------------------------------------
+|  ADD NEW EMPLOYEE                                 |
+-----------------------------------------------------
+|  Name:        [_____________]                     |
+|  Email:       [_____________]                     |
+|  Department:  [Engineering ▼]                    |
+|  Role:        [Software Engineer ▼]             |
+|  Manager:     [Select Manager ▼]                |
+-----------------------------------------------------
+|  [✓] Auto-generate access                         |
+|  [✓] Trigger onboarding workflow                  |
+-----------------------------------------------------
+|              [ CREATE EMPLOYEE ]                  |
+-----------------------------------------------------
+
+📌 Action: Clicking "Create Employee" triggers automation.
+
+3. ⚙️ Onboarding Workflow Visualization
+HR Action
+   ↓
+🟢 Employee Created
+   ↓
+⚙️ Workflow Engine Triggered
+   ↓
+🔐 IAM Provisioning (Email, Tools)
+   ↓
+👨‍💼 Manager Approval Task
+   ↓
+📚 Training Assigned
+   ↓
+✅ Employee Active
+4. 📊 Workflow Progress Tracker (Live UI)
+-----------------------------------------------------
+|  ONBOARDING STATUS - JOHN DOE                     |
+-----------------------------------------------------
+|  Step 1: HR Verification       ✔ Completed        |
+|  Step 2: IT Provisioning       ✔ Completed        |
+|  Step 3: Manager Approval      ⏳ Pending         |
+|  Step 4: Training Assigned     ⬜ Not Started     |
+|  Step 5: Account Activation    ⬜ Not Started     |
+-----------------------------------------------------
+|  Progress: [███████░░░] 70%                      |
+-----------------------------------------------------
+5. 🧑‍💻 Employee Self-Service Portal
+-----------------------------------------------------
+|  WELCOME DASHBOARD                                |
+-----------------------------------------------------
+|  👋 Welcome, John Doe                             |
+-----------------------------------------------------
+|  Onboarding Checklist:                            |
+|  [✔] Accept NDA                                  |
+|  [✔] Complete Profile                            |
+|  [⏳] Complete Training Module                   |
+|  [ ] Setup MFA                                   |
+-----------------------------------------------------
+|  Progress: 60% Completed                          |
+-----------------------------------------------------
+6. 🚪 Offboarding Screen (IT + HR View)
+-----------------------------------------------------
+|  OFFBOARDING REQUEST                              |
+-----------------------------------------------------
+|  Employee: John Doe                              |
+|  Reason: Exit Resignation                        |
+|  Exit Date: 2026-07-04                          |
+-----------------------------------------------------
+|  [Approve Exit]  [Reject]                        |
+-----------------------------------------------------
+|  System Actions Triggered After Approval:        |
+|  - Revoke Access                                 |
+|  - Disable Email                                 |
+|  - Collect Assets                                |
+|  - Archive Data                                  |
+-----------------------------------------------------
+7. 🔐 Access Control Visualization
+-----------------------------------------------------
+|  ROLE → PERMISSION MAPPING                       |
+-----------------------------------------------------
+|  HR_ADMIN   → Create / Update Employees          |
+|  IT_ADMIN   → Grant / Revoke Access              |
+|  MANAGER    → Approve / Assign Tasks             |
+|  EMPLOYEE   → View Own Data                      |
+-----------------------------------------------------
+|  SECURITY MODEL: RBAC + Least Privilege          |
+-----------------------------------------------------
+8. 🔄 Full Lifecycle Flow Diagram
+          ┌──────────────┐
+          │  HR CREATES  │
+          └──────┬───────┘
+                 ↓
+        ┌──────────────────┐
+        │ ONBOARDING START │
+        └──────┬───────────┘
+               ↓
+     ┌──────────────────────┐
+     │ IAM + ACCESS CREATED │
+     └──────┬───────────────┘
+            ↓
+   ┌────────────────────────┐
+   │ EMPLOYEE ACTIVE STATE  │
+   └──────┬─────────────────┘
+          ↓
+   ┌────────────────────────┐
+   │ EXIT REQUEST INITIATED │
+   └──────┬─────────────────┘
+          ↓
+   ┌────────────────────────┐
+   │ OFFBOARDING EXECUTION  │
+   └──────┬─────────────────┘
+          ↓
+   ┌────────────────────────┐
+   │ ACCESS REVOKED + EXIT  │
+   └────────────────────────┘
+9. 📡 Real-Time Event Feed (System Activity)
+-----------------------------------------------------
+| LIVE EVENT STREAM                                 |
+-----------------------------------------------------
+| [NEW_HIRE] John created                          |
+| [IAM] Email generated                            |
+| [WORKFLOW] Manager approval pending             |
+| [ACCESS] GitHub access granted                  |
+| [EXIT] Access revoked for Alice                 |
+-----------------------------------------------------
+10. 🎯 End-to-End Visual Summary
+HR → Workflow Engine → IAM → Access Control → Employee Portal
+         ↓
+     Audit Logs (Always Active)
