@@ -1,0 +1,221 @@
+🧭 Navigation Flow
+Automated Employee Onboarding & Offboarding System
+
+This defines how users (HR, IT, Managers, Employees, Admins) move through the system UI and backend workflows during the employee lifecycle.
+
+1. Core Navigation Structure
+
+The system is typically organized into these main modules:
+
+Dashboard
+Employees
+Onboarding
+Offboarding
+Access Control
+Documents
+Workflows
+Audit Logs
+Settings
+2. Role-Based Navigation Flow
+👤 HR Admin Flow
+Login
+  ↓
+Dashboard
+  ↓
+Employees → Add New Employee
+  ↓
+Onboarding Module → Trigger Workflow
+  ↓
+Track Onboarding Status
+  ↓
+View Reports / Audit Logs
+
+HR mainly:
+
+Creates employee records
+Triggers onboarding
+Monitors lifecycle progress
+🖥️ IT Admin Flow
+Login
+  ↓
+Dashboard
+  ↓
+Access Control Module
+  ↓
+Provisioning Requests Queue
+  ↓
+Approve / Reject Access
+  ↓
+System Integrations (IAM / Email / Tools)
+
+IT mainly:
+
+Manages system access
+Handles provisioning & deprovisioning
+Integrates external systems
+👨‍💼 Manager Flow
+Login
+  ↓
+Dashboard
+  ↓
+Team View
+  ↓
+Onboarding Approvals
+  ↓
+Task Assignments
+  ↓
+Offboarding Approvals
+
+Managers:
+
+Approve onboarding/offboarding
+Assign onboarding tasks
+Track team members
+👩‍💻 Employee Flow
+Login
+  ↓
+Personal Dashboard
+  ↓
+Onboarding Checklist
+  ↓
+Training Modules
+  ↓
+Document Signing
+  ↓
+Profile Completion
+
+Employees:
+
+Complete onboarding tasks
+Access training
+View assigned resources
+🔐 System Admin Flow
+Login
+  ↓
+System Dashboard
+  ↓
+User & Role Management
+  ↓
+Workflow Configuration
+  ↓
+Audit Logs
+  ↓
+System Monitoring
+
+Admins:
+
+Configure workflows
+Manage roles
+Monitor system health
+3. Onboarding Navigation Flow (End-to-End)
+HR Adds Employee
+  ↓
+System Validates Data
+  ↓
+Workflow Triggered (NEW_HIRE event)
+  ↓
+IT Provisioning Queue
+  ↓
+Access Granted (Email, Tools)
+  ↓
+Manager Assignment
+  ↓
+Employee Checklist Activated
+  ↓
+Training + Documentation
+  ↓
+Onboarding Completed
+4. Offboarding Navigation Flow
+Exit Request Created
+  ↓
+Manager Approval
+  ↓
+HR Confirmation
+  ↓
+Workflow Triggered (EXIT_APPROVED)
+  ↓
+IT Revokes Access
+  ↓
+Asset Return Tracking
+  ↓
+Payroll Finalization
+  ↓
+Data Archival
+  ↓
+Employee Status = EXITED
+5. System Navigation Map (UI Structure)
+🏠 Dashboard
+   ├── Employee Overview
+   ├── Active Onboarding
+   ├── Pending Offboarding
+   └── Alerts
+
+👥 Employees
+   ├── Add Employee
+   ├── Employee Directory
+   └── Employee Profile
+
+🚀 Onboarding
+   ├── Workflow Templates
+   ├── Active Cases
+   └── Completed Onboarding
+
+🚪 Offboarding
+   ├── Exit Requests
+   ├── Access Revocation
+   └── Clearance Status
+
+🔐 Access Control
+   ├── Roles
+   ├── Permissions
+   └── IAM Integrations
+
+📄 Documents
+   ├── Templates
+   ├── Signed Documents
+   └── Compliance Records
+
+📊 Audit Logs
+   ├── System Logs
+   ├── Access Logs
+   └── Workflow History
+
+⚙️ Settings
+   ├── Workflow Engine
+   ├── Notifications
+   └── System Configuration
+6. Navigation State Transitions
+Employee Lifecycle States
+CREATED → ONBOARDING_IN_PROGRESS → ACTIVE → EXIT_REQUESTED → EXITED
+State Flow Rules:
+CREATED → ONBOARDING only via HR trigger
+ONBOARDING → ACTIVE only when all tasks completed
+ACTIVE → EXIT_REQUESTED via manager/HR action
+EXIT_REQUESTED → EXITED only after full offboarding workflow
+7. API Navigation Flow (Backend Routing)
+POST   /employees/create
+POST   /workflow/onboard
+POST   /workflow/offboard
+GET    /employees/{id}
+POST   /access/grant
+POST   /access/revoke
+GET    /audit/logs
+8. Error Navigation Paths
+Error Condition	Navigation Outcome
+Unauthorized access	Redirect to login
+Invalid workflow state	Show error + rollback
+Missing employee data	Return to form
+IAM failure	Queue retry job
+Access denied	Show 403 page
+9. Navigation Performance Rules
+Dashboard load < 2 sec
+Workflow pages < 3 sec
+API responses < 300 ms
+Lazy loading for logs and history
+Pagination for employee lists
+10. UX Navigation Principles
+Role-based visibility (no clutter)
+Minimal clicks to complete onboarding
+Clear status indicators (Pending / Active / Completed)
+Breadcrumb navigation for workflows
+Real-time status updates
