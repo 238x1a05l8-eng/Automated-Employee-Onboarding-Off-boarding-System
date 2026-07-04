@@ -1,0 +1,118 @@
+📜 Business Rules
+Automated Employee Onboarding & Offboarding System
+
+Business rules define the non-negotiable policies and logic that control how onboarding, offboarding, access, and employee lifecycle operations must behave in the system.
+
+They ensure consistency, compliance, and security enforcement across HR, IT, and IAM systems.
+
+1. Core Principle
+
+Business rules act as a policy layer above code:
+
+User Action → Business Rule Validation → Workflow Execution → System Response
+
+If a rule fails → the action is blocked or redirected.
+
+2. Employee Lifecycle Rules
+2.1 Onboarding Rules
+An employee must have a unique employee ID
+Email must be unique across the system
+Onboarding cannot start without HR approval
+Mandatory documents must be completed before activation
+Access provisioning only occurs after onboarding initiation
+IF employee_exists(email) → REJECT onboarding
+IF hr_approval == false → BLOCK workflow
+IF mandatory_docs_missing → PAUSE onboarding
+2.2 Activation Rules
+Employee status becomes ACTIVE only when:
+All onboarding tasks are completed
+IAM provisioning is successful
+Manager approval is recorded
+IF tasks_complete AND access_granted AND approved
+→ SET status = ACTIVE
+2.3 Offboarding Rules
+Offboarding must be approved by both HR and Manager
+Access must be revoked BEFORE employee status changes to EXITED
+No new access can be granted after exit request is approved
+IF exit_requested AND NOT approved → BLOCK
+IF status = EXITED → DENY all access requests
+IF access_not_revoked → HOLD status change
+3. Access Control Rules
+3.1 Role-Based Access Rules
+Users can only access resources assigned to their role
+No cross-role privilege escalation allowed
+Temporary roles expire automatically
+IF user_role NOT IN allowed_roles → DENY access
+IF attempt_privilege_escalation → LOG + BLOCK
+3.2 Least Privilege Rule
+Every employee receives minimum required permissions
+Additional access must be explicitly approved
+ASSIGN permissions = MINIMUM_REQUIRED(role)
+3.3 Sensitive System Access Rule
+Admin-level access requires MFA
+Financial or HR data access requires dual approval
+4. Data Integrity Rules
+Employee ID must be unique and immutable
+Email cannot be reused even after exit (for audit safety)
+Foreign keys must always be valid
+IF duplicate_employee_id → REJECT
+IF invalid_reference → BLOCK transaction
+5. Workflow Rules
+5.1 State Transition Rules
+CREATED → ONBOARDING → ACTIVE → EXIT_REQUESTED → EXITED
+
+Invalid transitions are blocked.
+
+Example:
+
+ACTIVE → ONBOARDING ❌ not allowed
+EXITED → ACTIVE ❌ not allowed
+5.2 SLA Rules
+Onboarding must complete within X days (e.g., 3–5 days)
+IT provisioning must complete within 24 hours
+Offboarding access revocation must be immediate
+6. Security Rules
+All sensitive actions require authentication + authorization
+Session timeout after inactivity
+API access requires valid token
+All admin actions must be logged
+IF no_auth OR invalid_token → DENY request
+IF admin_action → LOG mandatory
+7. Document Rules
+NDA must be signed before system access
+Offer letter must exist before onboarding starts
+Exit clearance required before final settlement
+IF NDA_signed == false → BLOCK access
+IF offer_letter_missing → BLOCK onboarding
+8. Time-Based Rules
+Inactive users (>30 days) are auto-disabled
+Exited employees archived after retention period
+Pending approvals auto-expire after defined SLA
+9. Notification Rules
+Notify HR on onboarding completion
+Notify IT on access requests
+Notify manager on task completion delays
+Notify security on failed login attempts
+10. Exception Handling Rules
+If IAM system fails → retry 3 times before escalation
+If workflow fails → rollback transaction
+If data mismatch → block update and raise alert
+IF system_failure → RETRY(3)
+IF retry_failed → ESCALATE
+11. Compliance Rules
+All actions must be audit-logged
+Data retention must follow policy duration
+Sensitive data must be encrypted
+Access history must be traceable
+12. Automation Enforcement Rules
+Rules are evaluated BEFORE workflow execution
+Violations stop execution immediately
+Rule engine runs synchronously for critical actions
+13. Rule Evaluation Flow
+Request Received
+   ↓
+Check Business Rules
+   ↓
+If PASS → Execute Workflow
+   ↓
+If FAIL → Block + Log + Notify
