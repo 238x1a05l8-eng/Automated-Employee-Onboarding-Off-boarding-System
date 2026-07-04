@@ -1,0 +1,110 @@
+1. Database Connection Error
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class DBConnection {
+
+    public static Connection getConnection() {
+
+        Connection con = null;
+
+        try {
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/hrms",
+                    "root",
+                    "password");
+
+            System.out.println("Database Connected Successfully");
+
+        } catch (Exception e) {
+
+            System.out.println("Database Connection Failed");
+            e.printStackTrace();
+        }
+
+        return con;
+    }
+}
+2. Employee Login Troubleshooting
+if(username.isEmpty() || password.isEmpty()){
+
+    JOptionPane.showMessageDialog(null,
+            "Please Enter Username and Password");
+
+}
+else{
+
+    System.out.println("Login Successful");
+
+}
+3. Duplicate Employee ID Check
+PreparedStatement ps = con.prepareStatement(
+"SELECT * FROM employee WHERE emp_id=?");
+
+ps.setString(1, empId);
+
+ResultSet rs = ps.executeQuery();
+
+if(rs.next()){
+
+    JOptionPane.showMessageDialog(null,
+            "Employee ID Already Exists");
+
+}else{
+
+    System.out.println("Employee ID Available");
+
+}
+4. Email Validation
+String email = txtEmail.getText();
+
+if(!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")){
+
+    JOptionPane.showMessageDialog(null,
+            "Invalid Email Address");
+
+}
+5. Document Upload Error
+File file = new File(path);
+
+if(file.exists()){
+
+    System.out.println("Document Uploaded Successfully");
+
+}else{
+
+    JOptionPane.showMessageDialog(null,
+            "Document Upload Failed");
+
+}
+6. Onboarding Task Completion Check
+boolean documents = true;
+boolean laptop = true;
+boolean email = false;
+
+if(documents && laptop && email){
+
+    System.out.println("Employee Onboarding Completed");
+
+}else{
+
+    System.out.println("Pending Onboarding Tasks");
+
+}
+7. Asset Return Verification (Offboarding)
+boolean laptopReturned = true;
+boolean idCardReturned = false;
+
+if(laptopReturned && idCardReturned){
+
+    System.out.println("Offboarding Completed");
+
+}else{
+
+    JOptionPane.showMessageDialog(null,
+            "Pending Asset Return");
+
+}
