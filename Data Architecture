@@ -1,0 +1,219 @@
+🏗️ Data Architecture
+Automated Employee Onboarding & Offboarding System
+
+Data Architecture defines how employee data is structured, stored, moved, secured, and synchronized across HR, IT, IAM, and workflow systems.
+
+1. High-Level Architecture Overview
+
+The system follows a layered + event-driven architecture:
+
+[ UI Layer ]
+     ↓
+[ API Gateway ]
+     ↓
+[ Workflow Engine ]
+     ↓
+[ Service Layer ]
+     ├── HR Service
+     ├── IAM Service
+     ├── Access Control Service
+     ├── Document Service
+     ├── Audit Service
+     ↓
+[ Data Layer ]
+     ├── PostgreSQL (Core Data)
+     ├── Object Storage (Documents)
+     ├── Log Store (Audit Logs)
+     ├── Event Bus (Kafka / Queue)
+2. Core Data Domains
+2.1 Employee Domain
+
+Stores master employee information.
+
+Employee
+- employee_id (PK)
+- name
+- email
+- department
+- designation
+- status (ACTIVE / EXITED / INACTIVE)
+- joined_date
+- exit_date
+2.2 Access Control Domain
+
+Manages roles and permissions.
+
+UserRole
+Role
+Permission
+RolePermission
+
+Key relationships:
+
+Employee → Role (many-to-many)
+Role → Permissions (many-to-many)
+2.3 Workflow Domain
+
+Tracks onboarding/offboarding processes.
+
+WorkflowInstance
+- id
+- employee_id
+- type (ONBOARDING / OFFBOARDING)
+- status
+- created_at
+- updated_at
+2.4 Document Domain
+
+Handles HR and compliance documents.
+
+Document
+- document_id
+- employee_id
+- type (NDA, Offer Letter, Exit Form)
+- storage_url
+- signed_status
+
+Stored in:
+
+Object Storage (S3-like system)
+2.5 Audit Domain
+
+Immutable logs for compliance.
+
+AuditLog
+- log_id
+- employee_id
+- action
+- performed_by
+- timestamp
+- metadata
+3. Logical Data Flow
+3.1 Onboarding Flow
+HR System
+   ↓
+Employee Data Created
+   ↓
+Workflow Engine Trigger (NEW_HIRE)
+   ↓
+IAM Service → Create Access
+   ↓
+Access Control Service → Assign Roles
+   ↓
+Document Service → Store Signed Docs
+   ↓
+Audit Service → Log All Actions
+3.2 Offboarding Flow
+Exit Request
+   ↓
+Approval Workflow
+   ↓
+IAM Service → Revoke Access
+   ↓
+Access Control → Remove Roles
+   ↓
+Document Archive
+   ↓
+Audit Log Finalization
+   ↓
+Employee Status = EXITED
+4. Physical Data Architecture
+4.1 Primary Database (Relational)
+PostgreSQL / MySQL
+Stores:
+Employees
+Roles
+Permissions
+Workflow states
+4.2 Object Storage
+Stores:
+Contracts
+NDAs
+Exit documents
+
+Example:
+
+s3://company-hr-docs/employee_id/document.pdf
+4.3 Event Streaming Layer
+
+Used for real-time sync:
+
+Kafka / RabbitMQ
+
+Events:
+
+EMPLOYEE_CREATED
+ACCESS_GRANTED
+EXIT_APPROVED
+ACCESS_REVOKED
+4.4 Audit Log Store
+Append-only database or log system
+Cannot be modified (immutability requirement)
+5. Data Flow Architecture (Event-Driven)
+[HR System]
+    ↓ EMPLOYEE_CREATED
+[Event Bus]
+    ↓
+[Workflow Engine]
+    ↓
+[IAM Service] → Access Granted
+    ↓
+[Audit Service] → Log Event
+6. Data Consistency Model
+6.1 Strong Consistency
+
+Used for:
+
+Employee status updates
+Access revocation
+
+Ensures immediate correctness.
+
+6.2 Eventual Consistency
+
+Used for:
+
+Reports
+Analytics dashboards
+Sync across external systems
+7. Data Storage Strategy
+Data Type	Storage	Reason
+Employee records	PostgreSQL	Structured relational data
+Roles/Permissions	PostgreSQL	Strong consistency
+Documents	Object Storage	Large binary files
+Logs	Log DB / Elastic	Fast querying
+Events	Kafka	Real-time processing
+8. Data Security Architecture
+8.1 Encryption
+At rest → AES-256
+In transit → TLS 1.2+
+8.2 Access Control Layer
+Role-Based Access Control (RBAC)
+Least privilege principle
+API-level authorization checks
+8.3 Data Isolation
+HR data separated from IT access data
+Audit logs isolated (immutable store)
+9. Data Lifecycle Architecture
+CREATE → ACTIVE → UPDATE → EXIT → ARCHIVE → DELETE
+
+Rules:
+
+ACTIVE → EXIT only via approval workflow
+ARCHIVE before deletion
+DELETE only after retention period
+10. Scalability Design
+Horizontal scaling of API services
+Partitioned employee tables (by department or region)
+Event-driven async processing
+Read replicas for reporting
+11. Data Integrity Layer (Embedded Rules)
+Foreign key enforcement
+Transactional workflows (ACID)
+Duplicate prevention logic
+Schema validation at API layer
+12. Disaster Recovery Architecture
+Daily database backups
+Multi-region storage replication
+Point-in-time recovery (PITR)
+Event replay using Kafka logs
