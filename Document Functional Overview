@@ -1,0 +1,55 @@
+Functional Overview – Automated Employee Onboarding & Offboarding System
+
+The Automated Employee Onboarding & Offboarding System is designed to manage the complete employee lifecycle through structured workflows, automation, and centralized data management.
+
+1. User Management Functionality
+Create, update, and delete user accounts.
+Role-based access control (Admin, HR, Manager, IT, Employee).
+Secure login and authentication system.
+Password reset and account recovery.
+2. Employee Management
+Add new employee records.
+Update employee details (designation, department, contact info).
+View employee profile and history.
+Search and filter employee database.
+3. Onboarding Functionality
+Automated onboarding request creation.
+Assignment of onboarding tasks (HR, IT, Manager).
+Document upload and verification.
+Email creation and system access setup.
+Training and orientation scheduling.
+Onboarding progress tracking dashboard.
+4. Offboarding Functionality
+Initiation of resignation or termination process.
+Approval workflow (Manager → HR → Finance → IT).
+Asset return tracking (laptop, ID card, access cards).
+Deactivation of system accounts and access rights.
+Final settlement processing.
+Exit interview scheduling and feedback collection.
+5. Document Management
+Upload and store employee documents securely.
+Categorization of documents (Offer letter, ID proof, certificates, exit documents).
+Download and preview options.
+Access control for sensitive documents.
+6. Asset Management
+Assign company assets to employees.
+Track asset usage and status.
+Manage asset return during offboarding.
+Maintain asset history records.
+7. Notification System
+Automated email/SMS alerts for:
+Pending onboarding tasks
+Approval requests
+Asset return reminders
+Exit process updates
+8. Reporting and Analytics
+Generate employee reports.
+Onboarding and offboarding status reports.
+Department-wise employee statistics.
+Asset utilization reports.
+Export reports in PDF/Excel formats.
+9. Workflow Automation
+Task assignment based on roles.
+Sequential approval process.
+Automatic status updates (Pending → In Progress → Completed).
+Reduction of manual intervention.
