@@ -1,0 +1,205 @@
+👥 Stakeholder Mapping
+Automated Employee Onboarding & Offboarding System
+
+Stakeholder mapping identifies who is involved in the system, what they need, what they control, and how they interact with the onboarding/offboarding lifecycle.
+
+1. Overview
+
+The system involves multiple stakeholders across:
+
+HR operations
+IT infrastructure
+Security & compliance
+Management
+Employees
+External systems
+
+Each stakeholder has different goals, permissions, and responsibilities.
+
+2. Stakeholder Categories
+2.1 Primary Stakeholders (Direct Users)
+👤 HR Team
+
+Role: Owns employee lifecycle initiation
+
+Responsibilities:
+
+Create employee records
+Trigger onboarding workflows
+Manage exit requests
+Ensure documentation compliance
+
+System Interaction:
+
+Employee module
+Onboarding dashboard
+Offboarding approvals
+🖥️ IT Team
+
+Role: Manages system access and infrastructure
+
+Responsibilities:
+
+Create user accounts
+Provision/deprovision system access
+Manage IAM integrations
+Handle technical onboarding
+
+System Interaction:
+
+Access Control module
+IAM integration layer
+Workflow engine
+👨‍💼 Managers
+
+Role: Approve and supervise employee lifecycle
+
+Responsibilities:
+
+Approve onboarding
+Assign onboarding tasks
+Approve offboarding
+Monitor team access
+
+System Interaction:
+
+Approval dashboards
+Task management interface
+👩‍💻 Employees
+
+Role: End users undergoing onboarding/offboarding
+
+Responsibilities:
+
+Complete onboarding checklist
+Submit required documents
+Complete training
+Acknowledge policies
+
+System Interaction:
+
+Self-service portal
+Document module
+Training system
+3. Secondary Stakeholders
+🔐 Security Team
+
+Role: Ensures compliance and security enforcement
+
+Responsibilities:
+
+Monitor access violations
+Audit system logs
+Enforce security policies
+Investigate anomalies
+
+System Interaction:
+
+Audit logs
+Access control reports
+💰 Finance Team
+
+Role: Handles payroll and settlements
+
+Responsibilities:
+
+Activate payroll after onboarding
+Process final settlement during offboarding
+Validate employment status
+
+System Interaction:
+
+HR data sync
+Offboarding module
+⚙️ System Administrators
+
+Role: Maintain system infrastructure
+
+Responsibilities:
+
+Configure workflows
+Manage integrations
+Monitor system health
+Handle deployments
+4. External Stakeholders
+☁️ IAM Providers
+
+Examples:
+
+Microsoft (Azure Active Directory / Entra ID)
+Okta Identity Platform
+Google Workspace
+
+Role:
+
+Handle authentication and access provisioning
+📄 Document/E-Sign Providers
+Contract signing platforms
+Compliance document systems
+📊 HR Systems (Source of Truth)
+Workday / BambooHR-type systems (if integrated)
+5. Stakeholder Power vs Interest Matrix
+High Power / High Interest
+- HR Team
+- IT Team
+- Security Team
+
+High Power / Low Interest
+- Finance Team
+- System Admins
+
+Low Power / High Interest
+- Employees
+- Managers
+
+Low Power / Low Interest
+- External vendors (IAM tools)
+6. Stakeholder Interaction Flow
+Onboarding Flow
+HR → Creates Employee
+   ↓
+Manager → Approves Request
+   ↓
+IT → Provisions Access
+   ↓
+IAM Provider → Creates Accounts
+   ↓
+Employee → Completes Tasks
+   ↓
+Security → Monitors Logs
+Offboarding Flow
+Manager → Initiates Exit
+   ↓
+HR → Approves Exit
+   ↓
+IT → Revokes Access
+   ↓
+Finance → Processes Settlement
+   ↓
+Security → Validates Logs
+   ↓
+System → Archives Employee
+7. Stakeholder Needs Mapping
+Stakeholder	Need	System Feature
+HR	Fast onboarding	Automated workflows
+IT	Secure provisioning	IAM integration
+Managers	Visibility	Dashboard & approvals
+Employees	Clarity	Self-service portal
+Security	Compliance	Audit logs
+Finance	Accuracy	HR data sync
+8. Communication Channels
+Email notifications
+Workflow dashboards
+Slack / Teams alerts
+Audit reports
+Approval requests
+9. Conflict Handling Between Stakeholders
+Conflict	Resolution Rule
+HR vs IT delays	SLA-based escalation
+Manager delays approvals	Auto-reminder system
+Employee missing docs	Workflow pause
+Security flag vs HR urgency	Security overrides HR
+10. Stakeholder Dependency Chain
+HR → Manager → IT → IAM → Employee → Security → Finance
+
+Each step depends on the previous one being completed successfully.
