@@ -1,0 +1,186 @@
+⚙️ Automation Logic
+Automated Employee Onboarding & Offboarding System
+
+Automation Logic defines how the system reacts to events, triggers workflows, executes tasks, and enforces rules automatically across HR, IT, IAM, and compliance layers.
+
+1. Core Concept
+
+The system is event-driven + rule-based automation:
+
+Event → Rule Engine → Workflow → Actions → Audit Log
+
+Example:
+
+New employee added → triggers onboarding workflow → creates accounts → assigns roles → logs everything
+2. Types of Automation
+2.1 Event-Based Automation
+
+Triggered by system events:
+
+NEW_HIRE
+EXIT_APPROVED
+ROLE_CHANGED
+DOCUMENT_SIGNED
+2.2 Rule-Based Automation
+
+Triggered by conditions:
+
+Example rules:
+
+If department = "Engineering" → assign GitHub + Dev tools
+If role = Manager → grant approval permissions
+If exit_date is set → trigger offboarding
+2.3 Time-Based Automation
+
+Triggered by schedules:
+
+Send onboarding reminders daily
+Auto-disable inactive accounts after 30 days
+Archive exited employees after retention period
+3. Automation Engine Core (Code)
+3.1 Event Dispatcher
+class EventDispatcher:
+
+    def __init__(self, workflow_engine):
+        self.workflow_engine = workflow_engine
+
+    def dispatch(self, event_type, payload):
+        if event_type == "NEW_HIRE":
+            self.workflow_engine.start_onboarding(payload)
+
+        elif event_type == "EXIT_APPROVED":
+            self.workflow_engine.start_offboarding(payload)
+
+        elif event_type == "ROLE_CHANGED":
+            self.workflow_engine.update_access(payload)
+
+        else:
+            raise Exception("Unknown event type")
+4. Workflow Automation Engine
+class WorkflowEngine:
+
+    def start_onboarding(self, employee):
+        self.create_account(employee)
+        self.assign_roles(employee)
+        self.trigger_tasks(employee)
+        self.log("ONBOARDING_STARTED", employee["id"])
+
+    def start_offboarding(self, employee):
+        self.revoke_access(employee["id"])
+        self.archive_data(employee["id"])
+        self.log("OFFBOARDING_COMPLETED", employee["id"])
+
+    def update_access(self, payload):
+        self.sync_roles(payload["employee_id"], payload["new_role"])
+        self.log("ROLE_UPDATED", payload["employee_id"])
+5. Rule Engine (Business Logic Automation)
+5.1 Rule Definition
+rules = [
+    {
+        "condition": lambda e: e["department"] == "Engineering",
+        "action": "grant_dev_tools"
+    },
+    {
+        "condition": lambda e: e["role"] == "Manager",
+        "action": "enable_approval_rights"
+    }
+]
+5.2 Rule Processor
+class RuleEngine:
+
+    def apply_rules(self, employee):
+        for rule in rules:
+            if rule["condition"](employee):
+                self.execute(rule["action"], employee)
+
+    def execute(self, action, employee):
+        if action == "grant_dev_tools":
+            print(f"Granting dev tools to {employee['id']}")
+
+        elif action == "enable_approval_rights":
+            print(f"Enabling approvals for {employee['id']}")
+6. Onboarding Automation Flow
+HR Creates Employee
+   ↓
+Event: NEW_HIRE
+   ↓
+Rule Engine Evaluates Department/Role
+   ↓
+Workflow Engine Starts
+   ↓
+IAM System Creates Accounts
+   ↓
+Access Control Assigns Roles
+   ↓
+Tasks Assigned Automatically
+   ↓
+Audit Logs Written
+7. Offboarding Automation Flow
+Exit Approved
+   ↓
+Event: EXIT_APPROVED
+   ↓
+Immediate Access Revocation
+   ↓
+Deactivate Accounts
+   ↓
+Revoke Roles
+   ↓
+Archive Employee Data
+   ↓
+Trigger Payroll Finalization
+   ↓
+Audit Log Stored
+8. Time-Based Automation
+8.1 Scheduled Job Engine
+from datetime import datetime, timedelta
+
+class Scheduler:
+
+    def deactivate_inactive_users(self, employees):
+        for e in employees:
+            if e["last_login"] < datetime.utcnow() - timedelta(days=30):
+                self.disable_account(e["id"])
+8.2 Retention Automation
+def archive_old_employees(employees):
+    for e in employees:
+        if e["status"] == "EXITED" and e["exit_date"] < cutoff_date:
+            archive_employee(e["id"])
+9. Automation Triggers Matrix
+Event	Trigger Action
+NEW_HIRE	Start onboarding workflow
+EXIT_APPROVED	Start offboarding workflow
+ROLE_CHANGED	Update access permissions
+DOCUMENT_SIGNED	Move to next onboarding step
+INACTIVE_USER	Disable account
+10. Automation Decision Flow
+Event Received
+   ↓
+Check Rules
+   ↓
+Check Role
+   ↓
+Check Department
+   ↓
+Check System State
+   ↓
+Execute Workflow Actions
+   ↓
+Log Everything
+11. Error Handling in Automation
+def safe_execute(action, employee):
+    try:
+        action(employee)
+    except Exception as e:
+        log_error(employee["id"], str(e))
+        retry_queue.add(employee)
+12. Retry & Recovery Logic
+Failed IAM provisioning → retry 3 times
+Workflow failure → rollback transaction
+API failure → queue event for replay
+Audit always recorded (even on failure)
+13. Automation Optimization Rules
+Batch process bulk onboarding
+Async execution for IAM calls
+Cache role-permission mappings
+Parallel workflow execution for independent tasks
