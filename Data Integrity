@@ -1,0 +1,182 @@
+🧩 Data Integrity
+Automated Employee Onboarding & Offboarding System
+
+Data integrity ensures that employee data is accurate, consistent, complete, and trustworthy throughout onboarding, active employment, and offboarding.
+
+1. What Data Integrity Means Here
+
+In this system, data integrity guarantees:
+
+Employee records are not duplicated or corrupted
+Access permissions always match employee status
+Workflow data stays consistent across services
+No unauthorized or accidental modification of critical data
+Audit logs reflect the true sequence of events
+2. Types of Data Integrity
+2.1 Entity Integrity
+
+Each employee must have a unique identity.
+
+Primary key: employee_id
+No duplicates allowed
+Cannot be null
+2.2 Referential Integrity
+
+Relationships between tables must remain valid.
+
+Example:
+
+Every AccessRecord.employee_id must exist in Employee.id
+Every UserRole.user_id must map to a valid user
+2.3 Domain Integrity
+
+Data must follow valid formats and constraints:
+
+Email must be valid format
+Status must be: ACTIVE / EXITED / INACTIVE
+Dates must be logical (exit_date ≥ join_date)
+2.4 Business Rule Integrity
+
+Rules specific to onboarding/offboarding:
+
+No access provisioning after exit
+No onboarding if employee already exists
+Offboarding must revoke all access before archival
+3. Code: Integrity Enforcement Layer
+3.1 Validation Layer (Input Integrity)
+import re
+from datetime import datetime
+
+class IntegrityValidator:
+
+    @staticmethod
+    def validate_email(email: str):
+        pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
+        if not re.match(pattern, email):
+            raise ValueError("Invalid email format")
+
+    @staticmethod
+    def validate_dates(joined_date, exit_date=None):
+        if exit_date and exit_date < joined_date:
+            raise ValueError("Exit date cannot be before join date")
+
+    @staticmethod
+    def validate_employee_payload(data: dict):
+        required_fields = ["id", "name", "email", "joined_date"]
+
+        for field in required_fields:
+            if field not in data:
+                raise ValueError(f"Missing field: {field}")
+
+        IntegrityValidator.validate_email(data["email"])
+4. Database Integrity Constraints
+4.1 SQL-Level Constraints
+class Employee(Base):
+    __tablename__ = "employees"
+
+    id = Column(String, primary_key=True, nullable=False)
+    email = Column(String, unique=True, nullable=False)
+    name = Column(String, nullable=False)
+4.2 Foreign Key Protection
+class AccessRecord(Base):
+    __tablename__ = "access_records"
+
+    id = Column(String, primary_key=True)
+    employee_id = Column(String, ForeignKey("employees.id"), nullable=False)
+
+This ensures:
+
+No orphan access records
+No invalid role mappings
+5. Transaction Integrity (ACID Compliance)
+5.1 Safe Onboarding Transaction
+def onboard_employee(self, data):
+    try:
+        self.db.begin()
+
+        IntegrityValidator.validate_employee_payload(data)
+
+        employee = Employee(**data)
+        self.db.add(employee)
+
+        access = AccessRecord(
+            id=f"acc_{data['id']}",
+            employee_id=data["id"],
+            system_name="Google Workspace",
+            is_active=True
+        )
+        self.db.add(access)
+
+        self.db.commit()
+
+    except Exception as e:
+        self.db.rollback()
+        raise e
+
+Ensures:
+
+Either ALL onboarding steps succeed OR none are saved
+6. Data Consistency Across Systems
+Problem:
+
+HR, IAM, and Workflow systems may drift out of sync.
+
+Solution: Event-driven synchronization
+def sync_employee_status(employee_id, status):
+    hr_system.update_status(employee_id, status)
+    iam_system.update_access(employee_id, status)
+    audit_log.write(employee_id, f"Status synced: {status}")
+7. Duplicate Prevention Logic
+def prevent_duplicate_employee(db, email):
+    existing = db.query(Employee).filter_by(email=email).first()
+
+    if existing:
+        raise Exception("Employee already exists")
+8. Audit-Based Integrity Verification
+
+Every change must be traceable.
+
+class AuditService:
+
+    def log(self, employee_id, action):
+        entry = AuditLog(
+            id=f"log_{datetime.utcnow().timestamp()}",
+            employee_id=employee_id,
+            action=action,
+            timestamp=datetime.utcnow()
+        )
+        db.add(entry)
+        db.commit()
+9. Offboarding Integrity Rules
+def offboard_employee(employee_id):
+    employee = db.query(Employee).get(employee_id)
+
+    if employee.status == "EXITED":
+        raise Exception("Employee already offboarded")
+
+    revoke_all_access(employee_id)
+
+    employee.status = "EXITED"
+    employee.exit_date = datetime.utcnow()
+
+    db.commit()
+10. Data Synchronization Integrity (Multi-System)
+
+Ensures all systems reflect the same state:
+
+HR System → Employee status
+IAM System → Access state
+Workflow Engine → Task completion state
+11. Integrity Monitoring Rules
+Rule	Violation Action
+Duplicate email	Block creation
+Missing foreign key	Reject transaction
+Invalid status transition	Raise error
+Unauthorized update	Log + deny
+Incomplete offboarding	Trigger alert
+12. Data Integrity Testing (Quick Check)
+def test_data_integrity():
+    employee = db.query(Employee).get("EMP001")
+
+    assert employee.email is not None
+    assert employee.status in ["ACTIVE", "EXITED", "INACTIVE"]
