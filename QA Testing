@@ -1,0 +1,200 @@
+🧪 QA Testing
+Automated Employee Onboarding & Offboarding System
+
+This section defines how to test the system end-to-end to ensure correct workflows, secure access control, and reliable data handling.
+
+1. QA Testing Objectives
+
+QA ensures:
+
+Onboarding/offboarding workflows execute correctly
+Access control is enforced (no unauthorized access)
+Data is consistent and secure
+Integrations (HR, IAM, email) work correctly
+Audit logs are accurate and complete
+2. Testing Types
+2.1 Unit Testing
+
+Tests individual components:
+
+Employee creation
+Role assignment
+Access provisioning logic
+Audit logging
+2.2 Integration Testing
+
+Validates system interactions:
+
+HR system → Workflow engine
+Workflow → IAM provisioning
+Offboarding → access revocation
+2.3 System Testing (End-to-End)
+
+Simulates full lifecycle:
+
+New hire → onboarding → active state
+Exit request → offboarding → deactivated user
+2.4 Security Testing
+Unauthorized access attempts
+Role escalation attempts
+Token/session validation
+API security checks
+2.5 Regression Testing
+
+Ensures new changes don’t break:
+
+Existing workflows
+Access control rules
+Data retention logic
+3. Test Data Setup
+test_employee = {
+    "id": "EMP_TEST_001",
+    "name": "Test User",
+    "email": "test.user@company.com",
+    "department": "Engineering",
+    "designation": "Software Engineer",
+    "joined_date": "2026-07-01"
+}
+4. Unit Test Examples
+4.1 Employee Onboarding Test
+def test_onboard_employee():
+    service = EmployeeLifecycleService(db_session)
+
+    employee = service.onboard_employee(test_employee)
+
+    assert employee.id == "EMP_TEST_001"
+    assert employee.status.value == "ACTIVE"
+4.2 Access Provisioning Test
+def test_access_provisioning():
+    service = EmployeeLifecycleService(db_session)
+
+    service.onboard_employee(test_employee)
+
+    access = db_session.query(AccessRecord).filter_by(
+        employee_id="EMP_TEST_001"
+    ).first()
+
+    assert access.is_active is True
+4.3 Offboarding Test
+def test_offboarding():
+    service = EmployeeLifecycleService(db_session)
+
+    service.offboard_employee("EMP_TEST_001")
+
+    employee = db_session.query(Employee).get("EMP_TEST_001")
+
+    assert employee.status.value == "EXITED"
+5. Integration Testing
+5.1 HR → Workflow Engine
+def test_hr_to_workflow_trigger():
+    event = {
+        "type": "NEW_HIRE",
+        "payload": test_employee
+    }
+
+    response = workflow_controller.handle_event(
+        event["type"], event["payload"]
+    )
+
+    assert response.id == "EMP_TEST_001"
+5.2 Workflow → IAM System
+def test_iam_provisioning():
+    employee = service.onboard_employee(test_employee)
+
+    assert external_iam_system.user_exists(employee.email)
+6. Access Control Testing
+6.1 Unauthorized Access Test
+def test_access_denied():
+    acl = AccessControlService(db_session)
+
+    result = acl.has_permission(
+        user_id="random_user",
+        action="DELETE_EMPLOYEE",
+        resource="EMPLOYEE"
+    )
+
+    assert result is False
+6.2 Authorized Access Test
+def test_access_allowed():
+    acl = AccessControlService(db_session)
+
+    result = acl.has_permission(
+        user_id="hr_admin_01",
+        action="CREATE_EMPLOYEE",
+        resource="EMPLOYEE"
+    )
+
+    assert result is True
+7. Security Testing Scenarios
+7.1 Role Escalation Attempt
+Try assigning admin role via API without permission
+Expected: ❌ Rejected (403 Forbidden)
+7.2 Token Expiry Test
+Use expired session token
+Expected: ❌ Authentication failure
+7.3 Data Injection Test
+Attempt SQL injection in employee fields
+Expected: ❌ Input sanitized / blocked
+8. End-to-End Test Flow
+Onboarding Flow
+Create employee in HR system
+Trigger NEW_HIRE event
+Verify:
+Employee created
+Email generated
+Access provisioned
+Tasks assigned
+Audit logs written
+Offboarding Flow
+Trigger exit approval
+System executes:
+Access revoked
+Employee marked EXITED
+Assets flagged
+Data archived
+Audit logs recorded
+9. Performance Testing
+
+Check system under load:
+
+1000 onboarding requests/min
+Concurrent offboarding processes
+Workflow engine throughput
+Database write latency
+10. Test Automation Pipeline (CI/CD)
+stages:
+  - unit_tests
+  - integration_tests
+  - security_tests
+
+unit_tests:
+  script:
+    - pytest tests/unit/
+
+integration_tests:
+  script:
+    - pytest tests/integration/
+
+security_tests:
+  script:
+    - bandit -r app/
+11. Test Metrics
+Metric	Target
+Test Coverage	≥ 85%
+API Success Rate	99.9%
+Workflow Failure Rate	< 0.1%
+Security Failures	0 tolerated
+12. Bug Reporting Format
+Title: Access not revoked during offboarding
+
+Steps:
+1. Trigger exit workflow
+2. Check IAM system
+
+Expected:
+User access removed
+
+Actual:
+User still active
+
+Severity: High
